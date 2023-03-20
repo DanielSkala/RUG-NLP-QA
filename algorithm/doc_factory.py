@@ -11,7 +11,7 @@ class DocumentFactory(ABC):
         pass
 
     @abstractmethod
-    def retrieve(self, doc_id, document_ids: [int], metadata, *args, **kwargs) -> [TextEntry]:
+    def retrieve(self, doc_id, document_ids: [str], metadata: dict = None, *args, **kwargs) -> [TextEntry]:
         pass
 
 
@@ -19,6 +19,7 @@ class ESDocumentFactory(DocumentFactory):
 
     def __init__(self, es_client_params: dict, index_name="doc_text_entries"):
         self.es_client = Elasticsearch(**es_client_params)
+        self.index_name = index_name
         self.__create_index_if_not_exists()
 
     def destruct(self):
@@ -41,7 +42,7 @@ class ESDocumentFactory(DocumentFactory):
             },
         })
 
-    def store(self, doc_id, entries: [TextEntry], *args, **kwargs) -> bool:
+    def store(self, doc_id, entries: [TextEntry], refresh=False, *args, **kwargs) -> bool:
         actions = [
             {
                 "_index": self.index_name,
@@ -55,22 +56,25 @@ class ESDocumentFactory(DocumentFactory):
             }
             for entry in entries
         ]
-        bulk(self.es_client, actions)
+        bulk(self.es_client, actions, refresh=refresh)
         return True
 
-    def retrieve(self, doc_id, document_ids: [int], metadata=None, *args, **kwargs) -> [TextEntry]:
+    def retrieve(self, doc_id, document_ids: [str] = None, metadata: dict = None, *args, **kwargs) -> [TextEntry]:
         query = {
             "query": {
                 "bool": {
                     "must": [
                         {"term": {"parent_doc_id": doc_id}},
-                        {"terms": {"id": document_ids}}
-                    ]
-                }
-            }
+                    ],
+                },
+            },
         }
-        if metadata:
-            query["query"]["bool"]["must"].append({"term": {"metadata": metadata}})
+        if document_ids:
+            query["query"]["bool"]["must"].append({"terms": {"id": document_ids}})
+        if metadata is not None:
+            # match all the keys of metadata query
+            for key, value in metadata.items():
+                query["query"]["bool"]["must"].append({"term": {f"metadata.{key}": value}})
         response = self.es_client.search(index=self.index_name, body=query)
         entries = [
             TextEntry(
