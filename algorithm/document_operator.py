@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from algorithm.models import TextEntry
+from algorithm.models import TextEntry, Document
 from PyPDF2 import PdfReader
 from tqdm import tqdm
 import pickle
@@ -13,7 +13,17 @@ class DocumentOperator(ABC):
 
 class PDFDocumentOperator(DocumentOperator):
     def parse(self, document, *args, **kwargs) -> any:
-        data = document.data
-        reader = PdfReader(data)
+        path = document.data
+        reader = PdfReader(path)  # path / ../'Project plan.pdf'
         text = [page.extract_text() for page in tqdm(reader.pages)]
         return text
+
+
+if __name__ == '__main__':
+    operator = PDFDocumentOperator()
+    doc = Document(
+        id='1',
+        data='../Project plan.pdf'
+    )
+    text = operator.parse(doc)
+    print(text)

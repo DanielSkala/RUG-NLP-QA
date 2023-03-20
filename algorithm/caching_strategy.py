@@ -52,13 +52,9 @@ class CachingStrategy(ABC):
     def _parsed_obj_to_entries(self, parsed_obj) -> List[TextEntry]:
         pass
 
+    # TODO
     def _text2embedding_entries(self, text_entries: List[TextEntry]) -> List[EmbeddingEntry]:
-        embedding_entries = []
-        for text_entry in text_entries:
-            embedding = self.embedding_operator.embed(text_entry.text)
-            embedding_entry = EmbeddingEntry(id=text_entry.id, embedding=embedding, metadata=text_entry.metadata)
-            embedding_entries.append(embedding_entry)
-        return embedding_entries
+        return self.embedding_operator.embed(text_entries)
 
     def _embedding2text_entries(self, embedding_entries: List[EmbeddingEntry]) -> List[TextEntry]:
         ids = [embedding_entry.id for embedding_entry in embedding_entries]
