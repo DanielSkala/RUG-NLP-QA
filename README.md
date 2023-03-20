@@ -3,6 +3,16 @@ Open-book Question Answering for NLP
 
 
 # Requirements
+## Python
+```
+pip install -r requirements.txt
+```
+
+## Download required models
+```
+python ./scripts/download_artifacts.py
+```
+
 ## Elastic Search
 Installation using docker is the easiest
 ```
@@ -26,7 +36,3 @@ Find indexes
 curl http://localhost:9200/_aliases
 ```
 
-## Python
-```
-pip install -r requirements.txt
-```
