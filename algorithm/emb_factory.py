@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from algorithm.models import EmbeddingEntry
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import bulk
 
 
 class EmbeddingFactory(ABC):
@@ -25,42 +26,44 @@ class ESEmbeddingFactory(EmbeddingFactory):
         self.embedding_size = embedding_size
         self.__create_index_if_not_exists()
 
+    def destruct(self):
+        self.es_client.indices.delete(index=self.index_name)
+
+    def clear(self):
+        self.destruct()
+        self.__create_index_if_not_exists()
+
     def __create_index_if_not_exists(self):
         if self.es_client.indices.exists(index=self.index_name):
             return
         self.es_client.indices.create(index=self.index_name)
-        self.es_client.indices.put_mapping(index=self.index_name,
-                                           body={
-                                               "properties": {
-                                                   "id": {
-                                                       "type": "keyword",
-                                                   },
-                                                   "embedding": {
-                                                       "type": "dense_vector",
-                                                       "dims": self.embedding_size,
-                                                   },
-                                                   "metadata": {
-                                                       "type": "object",
-                                                   },
-                                               },
-                                           },
-                                           )
+        self.es_client.indices.put_mapping(index=self.index_name, body={
+            "properties": {
+                "embedding": {
+                    "type": "dense_vector",
+                    "dims": self.embedding_size,
+                },
+                "metadata": {
+                    "type": "object",
+                },
+            },
+        })
 
-    def store(self, embeddings: [EmbeddingEntry], *args, **kwargs):
-        # fast bulk insert
+    def store(self, embeddings: [EmbeddingEntry], refresh=False, *args, **kwargs):
         actions = [
             {
                 "_index": self.index_name,
-                "_id": embedding.id,
-                "embedding": embedding.embedding,
-                "metadata": embedding.metadata,
+                "_id": embedding_entry.id,
+                "_source": {
+                    "embedding": embedding_entry.embedding,
+                    "metadata": embedding_entry.metadata,
+                },
             }
-            for embedding in embeddings
-        ]
-        self.es_client.bulk(actions)
+            for embedding_entry in embeddings]
+        bulk(self.es_client, actions, refresh=refresh)
 
-    def retrieve(self, embedding: [float], metadata: dict, *args, **kwargs) -> [EmbeddingEntry]:
-        # fast retrieval
+    def retrieve(self, embedding: [float], metadata: dict=None, *args, **kwargs) -> [EmbeddingEntry]:
+        # fast retrieval and sort by score
         query = {
             "query": {
                 "script_score": {
@@ -68,7 +71,6 @@ class ESEmbeddingFactory(EmbeddingFactory):
                         "match_all": {},
                     },
                     "script": {
-
                         "source": "cosineSimilarity(params.query_vector, 'embedding') + 1.0",
                         "params": {
                             "query_vector": embedding,
@@ -76,6 +78,7 @@ class ESEmbeddingFactory(EmbeddingFactory):
                     },
                 },
             },
+            "size": 10,
         }
         if metadata:
             query["query"]["script_score"]["query"]["match"] = {
