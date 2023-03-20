@@ -1,17 +1,16 @@
-# import pytest
 from algorithm.emb_factory import ESEmbeddingFactory
 from algorithm.models import EmbeddingEntry
-import pytest
+
+es_client_params = {
+    "hosts": "http://localhost:9200",
+    "timeout": 30,
+}
+
+index_name = "test_index"
 
 
 class TestESEmbeddingFactory:
     def test_create_index_if_not_exists(self):
-        es_client_params = {
-            "hosts": ["localhost"],
-            "port": 9200,
-
-        }
-        index_name = "test_index"
         embedding_size = 128
         es_embedding_factory = ESEmbeddingFactory(es_client_params, index_name, embedding_size)
         assert es_embedding_factory.es_client.indices.exists(index=index_name)
@@ -22,11 +21,6 @@ class TestESEmbeddingFactory:
         for i in range(10):
             embedding_entries.append(EmbeddingEntry(str(i), [i for _ in range(128)], {}))
 
-        es_client_params = {
-            "hosts": ["localhost"],
-            "port": 9200,
-        }
-        index_name = "test_index"
         embedding_size = 128
         es_embedding_factory = ESEmbeddingFactory(es_client_params, index_name, embedding_size)
         es_embedding_factory.store(embedding_entries)
@@ -38,11 +32,6 @@ class TestESEmbeddingFactory:
             EmbeddingEntry("0", [1 for _ in range(128)], {}),
             EmbeddingEntry("1", [1 for _ in range(128)], {}),
         ]
-        es_client_params = {
-            "hosts": ["localhost"],
-            "port": 9200,
-        }
-        index_name = "test_index"
         embedding_size = 128
         es_embedding_factory = ESEmbeddingFactory(es_client_params, index_name, embedding_size)
         es_embedding_factory.store(embedding_entries)
@@ -54,3 +43,10 @@ class TestESEmbeddingFactory:
         assert retrieved_embedding_entries[1].embedding == [1 for _ in range(128)]
         assert retrieved_embedding_entries[0].metadata == {}
         assert retrieved_embedding_entries[1].metadata == {}
+
+
+if __name__ == "__main__":
+    test = TestESEmbeddingFactory()
+    test.test_create_index_if_not_exists()
+    test.test_store()
+    test.test_retrieve()
