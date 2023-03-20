@@ -17,7 +17,7 @@ class EmbeddingFactory(ABC):
 class ESEmbeddingFactory(EmbeddingFactory):
 
     def __init__(self,
-                 es_client_params,
+                 es_client_params: dict,
                  index_name,
                  embedding_size):
         self.es_client = Elasticsearch(**es_client_params)
@@ -26,7 +26,7 @@ class ESEmbeddingFactory(EmbeddingFactory):
         self.__create_index_if_not_exists()
 
     def __create_index_if_not_exists(self):
-        if not self.es_client.indices.exists(index=self.index_name):
+        if self.es_client.indices.exists(index=self.index_name):
             return
         self.es_client.indices.create(index=self.index_name)
         self.es_client.indices.put_mapping(index=self.index_name,
