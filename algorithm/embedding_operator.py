@@ -38,7 +38,7 @@ class OpenAIEmbeddingOperator(EmbeddingOperator):
     def embed(self, entries: [TextEntry], *args, **kwargs) -> [EmbeddingEntry]:
         embeddings = OpenAIEmbedding.create(
             model=self.model_name,
-            text=[entry.text for entry in entries]
+            input=[entry.text for entry in entries]
         )
         return [
             EmbeddingEntry(
