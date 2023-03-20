@@ -18,7 +18,7 @@ document_index_name = 'example_document_index_2'
 if __name__ == '__main__':
     doc = Document(
         id='stalin_wiki',
-        data='./stalin.pdf'
+        data="./samples/stalin.pdf"
     )
 
     caching_strategy = PDFChunkingCachingStrategy(
