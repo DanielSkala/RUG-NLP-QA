@@ -62,7 +62,7 @@ class ESEmbeddingFactory(EmbeddingFactory):
             for embedding_entry in embeddings]
         bulk(self.es_client, actions, refresh=refresh)
 
-    def retrieve(self, embedding: [float], metadata: dict=None, *args, **kwargs) -> [EmbeddingEntry]:
+    def retrieve(self, embedding: [float], metadata: dict = None, *args, **kwargs) -> [EmbeddingEntry]:
         # fast retrieval and sort by score
         query = {
             "query": {
@@ -80,9 +80,11 @@ class ESEmbeddingFactory(EmbeddingFactory):
             },
             "size": 10,
         }
-        if metadata:
-            query["query"]["script_score"]["query"]["match"] = {
-                "metadata": metadata,
+        if metadata is not None:
+            query["query"]["script_score"]["query"] = {
+                "match": {
+                    "metadata": metadata,
+                },
             }
         response = self.es_client.search(index=self.index_name, body=query)
         return [

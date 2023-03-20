@@ -65,5 +65,16 @@ def test_retrieve(loaded_es_embedding_factory):
     assert retrieved_embedding_entries[1].metadata == {}
 
 
+def test_meta_retrieval(es_embedding_factory):
+    # generate random embedding entries
+    embedding_entries = []
+    for i in range(10):
+        embedding_entries.append(EmbeddingEntry(str(i), [i+1 for _ in range(embedding_size)], {"key": "value"}))
+    # Store them
+    es_embedding_factory.store(embedding_entries, refresh=True)
+    retrieved_embedding_entries = es_embedding_factory.retrieve([1.0 for _ in range(embedding_size)])
+    assert retrieved_embedding_entries[0].metadata == {"key": "value"}
+
+
 if __name__ == "__main__":
     pytest.main(["-v", "tests/es_factory.py"])
