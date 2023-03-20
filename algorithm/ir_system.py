@@ -15,9 +15,13 @@ class IRSystem(ABC):
     def index_document(self, document: Document, *args, **kwargs):
         self.caching_strategy.cache(document)
 
-    def find(self, doc_id: str, query: str, metadata: dict = None, *args, **kwargs) -> str:
+    def find(self, doc_id: str, query: str, metadata: dict = None, *args, **kwargs) -> dict:
         entries = self.caching_strategy.find(doc_id, query, metadata)
-        return self.answer_strategy.formulate_answer(query, entries)
+        return {
+            "resources": entries,
+            "query": query,
+            "answer": self.answer_strategy.formulate_answer(query, entries)
+        }
 
 
 class BookIRSystem(IRSystem):
