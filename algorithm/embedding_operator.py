@@ -1,7 +1,10 @@
 from abc import ABC, abstractmethod
 from algorithm.models import TextEntry, EmbeddingEntry
 from sentence_transformers import SentenceTransformer
-from tqdm import tqdm
+from openai import Embedding as OpenAIEmbedding
+import openai
+import os
+
 
 class EmbeddingOperator(ABC):
     @abstractmethod
@@ -23,7 +26,28 @@ class ModelEmbeddingOperator(EmbeddingOperator):
                 embedding=list(embedding),
                 metadata=entry.metadata
             ) for entry, embedding in
-            tqdm(zip(entries, embeddings))]
+            zip(entries, embeddings)]
+
+
+class OpenAIEmbeddingOperator(EmbeddingOperator):
+
+    def __init__(self, model_name: str):
+        self.model_name = model_name
+        openai.api_key = os.environ.get("OPENAI_API_KEY")
+
+    def embed(self, entries: [TextEntry], *args, **kwargs) -> [EmbeddingEntry]:
+        embedding = OpenAIEmbedding.create(
+            engine=self.model_name,
+            prompt=[entry.text for entry in entries]
+        )
+
+        return [
+            EmbeddingEntry(
+                id=entry.id,
+                embedding=list(embedding),
+                metadata=entry.metadata
+            ) for entry, embedding in
+            zip(entries, embedding)]
 
 
 if __name__ == '__main__':
