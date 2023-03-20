@@ -1,6 +1,6 @@
 from algorithm.ir_system import IRSystem
 from algorithm.document_operator import PDFDocumentOperator
-from algorithm.embedding_operator import ModelEmbeddingOperator
+from algorithm.embedding_operator import OpenAIEmbeddingOperator
 from algorithm.models import Document
 from algorithm.embedding_factory import ESEmbeddingFactory
 from algorithm.document_factory import ESDocumentFactory
@@ -17,15 +17,14 @@ document_index_name = 'example_document_index_2'
 
 if __name__ == '__main__':
     doc = Document(
-        id='transformers',
-        data=get_absolute_path("../samples/attention_is_all_you_need.pdf")
+        id='nlp_book',
+        data=get_absolute_path("../samples/nlp_book.pdf")
     )
 
     caching_strategy = PDFChunkingCachingStrategy(
         document_factory=ESDocumentFactory(es_client_params, index_name=document_index_name),
         embedding_factory=ESEmbeddingFactory(es_client_params, embedding_size=512, index_name=embedding_index_name),
-        embedding_operator=ModelEmbeddingOperator(
-            get_absolute_path('../artifacts/distiluse-base-multilingual-cased-v1')),
+        embedding_operator=OpenAIEmbeddingOperator("text-embedding-ada-002"),
         document_operator=PDFDocumentOperator(),
         chunk_size=5,
         sentence_word_count=(10, 20)
