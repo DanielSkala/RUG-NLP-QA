@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from algorithm.models import TextEntry, EmbeddingEntry
+from algorithm.models import TextEntry, EmbeddingEntry, Document
 from algorithm.embedding_operator import EmbeddingOperator
 from algorithm.embedding_factory import EmbeddingFactory
 from algorithm.document_factory import DocumentFactory, generate_id
@@ -31,25 +31,34 @@ class CachingStrategy(ABC):
         self.document_operator = document_operator
 
     """
-    Caches the document in embedding and text entry forms.
-    :parameter document: The document to be cached of any type.
+    Takes in and parses a document and indexes it
     """
 
+    def cache(self, document: Document):
+        # Parse the document
+        parsed_obj = self.document_operator.parse(document.data)
+        text_entries = self._parsed_obj_to_entries(parsed_obj)
+        embedding_entries = self._text2embedding_entries(text_entries)
+        # Store them
+        self._store_text(document.id, text_entries)
+        self._store_embeddings(document.id, embedding_entries)
+
     @abstractmethod
-    def cache(self, document, *args, **kwargs):
+    def _parsed_obj_to_entries(self, parsed_obj) -> List[TextEntry]:
         pass
 
-    def _get_matching_embeddings(self, doc_id, query: str, metadata: dict = None, *args, **kwargs) -> List[
-        EmbeddingEntry]:
-        embedding = self.embedding_operator.embed(query)
-        matched_embeddings = self.embedding_factory.retrieve(doc_id, embedding, metadata=metadata)
-        return matched_embeddings
+    def _text2embedding_entries(self, text_entries: List[TextEntry]) -> List[EmbeddingEntry]:
+        embedding_entries = []
+        for text_entry in text_entries:
+            embedding = self.embedding_operator.embed(text_entry.text)
+            embedding_entry = EmbeddingEntry(id=text_entry.id, embedding=embedding, metadata=text_entry.metadata)
+            embedding_entries.append(embedding_entry)
+        return embedding_entries
 
-    def _get_matching_text(self, doc_id, query: str, metadata: dict = None, *args, **kwargs) -> List[TextEntry]:
-        matched_embeddings = self._get_matching_embeddings(doc_id, query, metadata=metadata)
-        ids = [embedding.id for embedding in matched_embeddings]
-        matched_text = self.document_factory.retrieve(doc_id, ids, metadata=metadata)
-        return matched_text
+    def _embedding2text_entries(self, embedding_entries: List[EmbeddingEntry]) -> List[TextEntry]:
+        ids = [embedding_entry.id for embedding_entry in embedding_entries]
+        text_entries = self.document_factory.retrieve(ids)
+        return text_entries
 
     def _store_embeddings(self, doc_id, entries: List[EmbeddingEntry], *args, **kwargs):
         self.embedding_factory.store(doc_id, entries, *args, **kwargs)

@@ -8,12 +8,8 @@ from algorithm.models import Document
 class IRSystem(ABC):
 
     def __init__(self,
-                 caching_strategy: CachingStrategy,
-                 answer_strategy: AnswerStrategy,
-                 document_operator: DocumentOperator):
+                 caching_strategy: CachingStrategy):
         self.caching_strategy = caching_strategy
-        self.answer_strategy = answer_strategy
-        self.document_operator = document_operator
 
     def index_document(self, document: Document, *args, **kwargs):
         parsed_obj = self.document_operator.parse(document.data, *args, **kwargs)
