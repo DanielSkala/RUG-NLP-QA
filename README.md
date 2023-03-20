@@ -40,3 +40,10 @@ Run API in /api/main.py
 ```
 uvicorn api.main:app --reload --port 8000
 ```
+
+
+### OpenAI GPT-3
+Run the following command to get the API key
+```
+export OPENAI_API_KEY=<your key>
+```

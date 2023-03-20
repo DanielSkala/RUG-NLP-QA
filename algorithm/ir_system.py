@@ -20,7 +20,7 @@ class IRSystem(ABC):
         return {
             "resources": entries,
             "query": query,
-            "answer": "N/A"
+            "answer": self.answer_strategy.formulate_answer(query, entries)
         }
 
 
