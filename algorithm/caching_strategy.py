@@ -41,6 +41,7 @@ class CachingStrategy(ABC):
         parsed_obj = self.document_operator.parse(document)
         text_entries = self._parsed_obj_to_entries(parsed_obj)
         embedding_entries = self._text2embedding_entries(text_entries)
+        print(text_entries)
         # Store them
         self._store_text(document.id, text_entries)
         self._store_embeddings(document.id, embedding_entries)
@@ -55,7 +56,6 @@ class CachingStrategy(ABC):
     def _parsed_obj_to_entries(self, parsed_obj) -> List[TextEntry]:
         pass
 
-    # TODO
     def _text2embedding_entries(self, text_entries: List[TextEntry]) -> List[EmbeddingEntry]:
         return self.embedding_operator.embed(text_entries)
 
@@ -91,9 +91,10 @@ class ChunkingCachingStrategy(CachingStrategy):
 
     def _chunk_corpus(self, corpus: str) -> List[TextEntry]:
 
+        chunks = chunk_corpus(corpus, self.chunk_size, self.sentence_word_count)
 
         text_entry_chunks = []
-        for chunk in chunked_chunks:
+        for chunk in chunks:
             chunk_id = generate_id()
             for sentence in chunk:
                 txt_entry_id = generate_id()
@@ -104,11 +105,7 @@ class ChunkingCachingStrategy(CachingStrategy):
         return text_entry_chunks
 
     def find(self, doc_id: str, query: str, metadata=None):
-        query_embedding = self.embedding_operator.embed([
-            TextEntry(id=generate_id(), text=query, metadata={})
-        ])[0].embedding
-        entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
-        text_entries = self._embedding2text_entries(doc_id, entries)
+        text_entries = super().find(doc_id, query, metadata)
         # convert to pandas and group by chunk_id
         df = pd.DataFrame([text_entry.to_dict() for text_entry in text_entries])
         df["chunk_id"] = df["metadata"].apply(lambda x: x["chunk_id"])

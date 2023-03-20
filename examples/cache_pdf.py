@@ -12,13 +12,13 @@ es_client_params = {
     "hosts": "http://localhost:9200",
 }
 
-embedding_index_name = 'example_embedding_index'
-document_index_name = 'example_document_index'
+embedding_index_name = 'example_embedding_index_2'
+document_index_name = 'example_document_index_2'
 
 if __name__ == '__main__':
     doc = Document(
-        id='project_plan.pdf',
-        data='./Project plan.pdf'
+        id='stalin_wiki',
+        data='./stalin.pdf'
     )
 
     caching_strategy = PDFChunkingCachingStrategy(
@@ -26,7 +26,9 @@ if __name__ == '__main__':
         embedding_factory=ESEmbeddingFactory(es_client_params, embedding_size=512, index_name=embedding_index_name),
         embedding_operator=ModelEmbeddingOperator(
             get_absolute_path('../artifacts/distiluse-base-multilingual-cased-v1')),
-        document_operator=PDFDocumentOperator()
+        document_operator=PDFDocumentOperator(),
+        chunk_size=5,
+        sentence_word_count=(10, 20)
     )
 
     ir_system = IRSystem(
