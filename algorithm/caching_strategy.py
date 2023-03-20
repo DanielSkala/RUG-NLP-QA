@@ -36,7 +36,7 @@ class CachingStrategy(ABC):
 
     def cache(self, document: Document):
         # Parse the document
-        parsed_obj = self.document_operator.parse(document.data)
+        parsed_obj = self.document_operator.parse(document)
         text_entries = self._parsed_obj_to_entries(parsed_obj)
         embedding_entries = self._text2embedding_entries(text_entries)
         # Store them
@@ -115,3 +115,8 @@ class ChunkingCachingStrategy(CachingStrategy):
                 }))
 
         return text_entry_chunks
+
+
+class PDFChunkingCachingStrategy(ChunkingCachingStrategy):
+    def _parsed_obj_to_entries(self, parsed_obj: [str]) -> List[TextEntry]:
+        return self._chunk_corpus("\n ========================= PAGE END ========================= \n".join(parsed_obj))
