@@ -1,4 +1,4 @@
-from algorithm.doc_factory import ESDocumentFactory
+from algorithm.document_factory import ESDocumentFactory
 from algorithm.models import TextEntry
 import pytest
 import time

@@ -1,4 +1,4 @@
-from algorithm.emb_factory import ESEmbeddingFactory
+from algorithm.embedding_factory import ESEmbeddingFactory
 from algorithm.models import EmbeddingEntry
 import pytest
 import time
