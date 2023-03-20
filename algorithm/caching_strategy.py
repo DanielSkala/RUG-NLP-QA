@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from algorithm.models import TextEntry, EmbeddingEntry
 from algorithm.embedding_operator import EmbeddingOperator
 from algorithm.embedding_factory import EmbeddingFactory
-from algorithm.document_factory import DocumentFactory
+from algorithm.document_factory import DocumentFactory, generate_id
 from algorithm.document_operator import DocumentOperator
 from typing import List
 
@@ -39,10 +39,23 @@ class CachingStrategy(ABC):
     def cache(self, document, *args, **kwargs):
         pass
 
-    def _get_matching_embeddings(self, doc_id, query: str, *args, **kwargs) -> List[EmbeddingEntry]:
+    def _get_matching_embeddings(self, doc_id, query: str, metadata: dict = None, *args, **kwargs) -> List[
+        EmbeddingEntry]:
         embedding = self.embedding_operator.embed(query)
-        matched_embeddings = self.embedding_factory.retrieve(embedding)
+        matched_embeddings = self.embedding_factory.retrieve(doc_id, embedding, metadata=metadata)
         return matched_embeddings
+
+    def _get_matching_text(self, doc_id, query: str, metadata: dict = None, *args, **kwargs) -> List[TextEntry]:
+        matched_embeddings = self._get_matching_embeddings(doc_id, query, metadata=metadata)
+        ids = [embedding.id for embedding in matched_embeddings]
+        matched_text = self.document_factory.retrieve(doc_id, ids, metadata=metadata)
+        return matched_text
+
+    def _store_embeddings(self, doc_id, entries: List[EmbeddingEntry], *args, **kwargs):
+        self.embedding_factory.store(doc_id, entries, *args, **kwargs)
+
+    def _store_text(self, doc_id, entries: List[TextEntry], *args, **kwargs):
+        self.document_factory.store(doc_id, entries, *args, **kwargs)
 
 
 class ChunkingCachingStrategy(CachingStrategy):
@@ -63,7 +76,7 @@ class ChunkingCachingStrategy(CachingStrategy):
         self.chunk_size = chunk_size
         self.sentence_word_count = sentence_word_count
 
-    def _chunk_corpus(self, corpus: str) -> List[List[str]]:
+    def _chunk_corpus(self, corpus: str) -> List[TextEntry]:
         chunks = []
         count_words = lambda sentence: len(sentence.split())
         sentence_acc = ""
@@ -82,4 +95,13 @@ class ChunkingCachingStrategy(CachingStrategy):
         for chunk in chunks:
             chunked_chunks += [chunk[i:i + self.chunk_size] for i in range(0, len(chunk), self.chunk_size)]
 
-        return chunked_chunks
+        text_entry_chunks = []
+        for chunk in chunked_chunks:
+            chunk_id = generate_id()
+            for sentence in chunk:
+                txt_entry_id = generate_id()
+                text_entry_chunks.append(TextEntry(id=txt_entry_id, text=sentence, metadata={
+                    "chunk_id": chunk_id
+                }))
+
+        return text_entry_chunks

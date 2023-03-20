@@ -1,7 +1,12 @@
 from abc import ABC, abstractmethod
-from algorithm.models import TextEntry, Document
+from algorithm.models import TextEntry
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
+import uuid
+
+
+def generate_id() -> str:
+    return str(uuid.uuid4())
 
 
 class DocumentFactory(ABC):
