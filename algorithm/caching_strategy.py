@@ -43,6 +43,11 @@ class CachingStrategy(ABC):
         self._store_text(document.id, text_entries)
         self._store_embeddings(document.id, embedding_entries)
 
+    def find(self, doc_id: str, query: str, metadata=None):
+        query_embedding = self.embedding_operator.embed(query)
+        entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
+        return self._embedding2text_entries(entries)
+
     @abstractmethod
     def _parsed_obj_to_entries(self, parsed_obj) -> List[TextEntry]:
         pass
