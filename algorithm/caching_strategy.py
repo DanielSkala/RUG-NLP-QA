@@ -118,7 +118,7 @@ class ChunkingCachingStrategy(CachingStrategy):
         return text_entry_chunks
 
     def find(self, doc_id: str, query: str, metadata=None):
-        query_embedding = self.embedding_operator.embed(query)
+        query_embedding = self.embedding_operator.embed([TextEntry(id=generate_id(), text=query, metadata={})])[0].embedding
         entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
         text_entries = self._embedding2text_entries(entries)
         # convert to pandas and group by chunk_id

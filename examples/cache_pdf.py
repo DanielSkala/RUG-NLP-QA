@@ -17,7 +17,7 @@ document_index_name = 'example_document_index'
 
 if __name__ == '__main__':
     doc = Document(
-        id='1',
+        id='project_plan.pdf',
         data='./Project plan.pdf'
     )
 

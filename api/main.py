@@ -32,6 +32,6 @@ ir_system = IRSystem(
 app = FastAPI()
 
 
-@app.get("/documents/{document_id}")
-def find(document_id: str, query: str):
-    return ir_system.find(document_id, query)
+@app.get("/doc/{document_id}/_index")
+def find(document_id: str, q: str):
+    return ir_system.find(document_id, q)
