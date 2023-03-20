@@ -36,18 +36,17 @@ class OpenAIEmbeddingOperator(EmbeddingOperator):
         openai.api_key = os.environ.get("OPENAI_API_KEY")
 
     def embed(self, entries: [TextEntry], *args, **kwargs) -> [EmbeddingEntry]:
-        embedding = OpenAIEmbedding.create(
-            engine=self.model_name,
-            prompt=[entry.text for entry in entries]
+        embeddings = OpenAIEmbedding.create(
+            model=self.model_name,
+            text=[entry.text for entry in entries]
         )
-
         return [
             EmbeddingEntry(
                 id=entry.id,
-                embedding=list(embedding),
+                embedding=embedding,
                 metadata=entry.metadata
             ) for entry, embedding in
-            zip(entries, embedding)]
+            zip(entries, embeddings)]
 
 
 if __name__ == '__main__':
