@@ -8,9 +8,9 @@ es_client_params = {
     "timeout": 30,
 }
 
-index_name = "test_index"
+index_name = "test_index_es_embedding_factory"
 embedding_size = 128
-
+doc_id = "test_doc_id"
 
 @pytest.fixture()
 def es_embedding_factory():
@@ -27,7 +27,7 @@ def loaded_es_embedding_factory(es_embedding_factory):
     for i in range(10):
         embedding_entries.append(EmbeddingEntry("preloaded-" + str(i), [i + -10.0 for _ in range(embedding_size)], {}))
     # Store them
-    es_embedding_factory.store(embedding_entries, refresh=True)
+    es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
     return es_embedding_factory
 
 
@@ -43,7 +43,7 @@ def test_store(es_embedding_factory):
     for i in range(10):
         embedding_entries.append(EmbeddingEntry(str(i), [i for _ in range(embedding_size)], {}))
     # Store them
-    es_embedding_factory.store(embedding_entries, refresh=True)
+    es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
     assert es_embedding_factory.es_client.count(index=index_name)["count"] == 10
 
 
@@ -53,9 +53,9 @@ def test_retrieve(loaded_es_embedding_factory):
         EmbeddingEntry("a", [1.0 for _ in range(embedding_size)], {}),
         EmbeddingEntry("b", [1.0 for _ in range(embedding_size)], {}),
     ]
-    loaded_es_embedding_factory.store(embedding_entries, refresh=True)
-    retrieved_embedding_entries = loaded_es_embedding_factory.retrieve([1.0 for _ in range(embedding_size)])
-    print(retrieved_embedding_entries)
+    loaded_es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
+    retrieved_embedding_entries = loaded_es_embedding_factory.retrieve(doc_id, [1.0 for _ in range(embedding_size)])
+
     assert loaded_es_embedding_factory.es_client.count(index=index_name)["count"] == 10 + 2
     assert retrieved_embedding_entries[0].id == "a"
     assert retrieved_embedding_entries[1].id == "b"
@@ -71,8 +71,8 @@ def test_meta_retrieval(es_embedding_factory):
     for i in range(10):
         embedding_entries.append(EmbeddingEntry(str(i), [i+1 for _ in range(embedding_size)], {"key": "value"}))
     # Store them
-    es_embedding_factory.store(embedding_entries, refresh=True)
-    retrieved_embedding_entries = es_embedding_factory.retrieve([1.0 for _ in range(embedding_size)])
+    es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
+    retrieved_embedding_entries = es_embedding_factory.retrieve(doc_id, [1.0 for _ in range(embedding_size)])
     assert retrieved_embedding_entries[0].metadata == {"key": "value"}
 
 
