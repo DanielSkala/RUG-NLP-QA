@@ -45,9 +45,10 @@ class CachingStrategy(ABC):
         self._store_embeddings(document.id, embedding_entries)
 
     def find(self, doc_id: str, query: str, metadata=None):
-        query_embedding = self.embedding_operator.embed(query)
+        query_embedding = \
+            self.embedding_operator.embed([TextEntry(generate_id(), text=query, metadata={})])[0].embedding
         entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
-        return self._embedding2text_entries(entries)
+        return self._embedding2text_entries(doc_id, entries)
 
     @abstractmethod
     def _parsed_obj_to_entries(self, parsed_obj) -> List[TextEntry]:
@@ -57,9 +58,9 @@ class CachingStrategy(ABC):
     def _text2embedding_entries(self, text_entries: List[TextEntry]) -> List[EmbeddingEntry]:
         return self.embedding_operator.embed(text_entries)
 
-    def _embedding2text_entries(self, embedding_entries: List[EmbeddingEntry]) -> List[TextEntry]:
+    def _embedding2text_entries(self, doc_id, embedding_entries: List[EmbeddingEntry]) -> List[TextEntry]:
         ids = [embedding_entry.id for embedding_entry in embedding_entries]
-        text_entries = self.document_factory.retrieve(ids)
+        text_entries = self.document_factory.retrieve(doc_id, ids)
         return text_entries
 
     def _store_embeddings(self, doc_id, entries: List[EmbeddingEntry], *args, **kwargs):
@@ -118,12 +119,15 @@ class ChunkingCachingStrategy(CachingStrategy):
         return text_entry_chunks
 
     def find(self, doc_id: str, query: str, metadata=None):
-        query_embedding = self.embedding_operator.embed([TextEntry(id=generate_id(), text=query, metadata={})])[0].embedding
+        query_embedding = self.embedding_operator.embed([
+            TextEntry(id=generate_id(), text=query, metadata={})
+        ])[0].embedding
         entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
-        text_entries = self._embedding2text_entries(entries)
+        text_entries = self._embedding2text_entries(doc_id, entries)
         # convert to pandas and group by chunk_id
         df = pd.DataFrame([text_entry.to_dict() for text_entry in text_entries])
-        df = df.groupby("metadata.chunk_id").agg(lambda x: " ".join(x))
+        df["chunk_id"] = df["metadata"].apply(lambda x: x["chunk_id"])
+        df = df.groupby("chunk_id").agg(lambda x: " ".join(x))
         # convert back to list of TextEntry
         text_entries = [TextEntry(id=chunk_id, text=text, metadata={"chunk_id": chunk_id}) for chunk_id, text in
                         df["text"].iteritems()]

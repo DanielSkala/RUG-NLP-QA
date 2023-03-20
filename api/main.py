@@ -25,7 +25,9 @@ caching_strategy = PDFChunkingCachingStrategy(
 
 ir_system = IRSystem(
     caching_strategy=caching_strategy,
-    answer_strategy=SentenceTransformerAnswerStrategy("../artifacts/gpt2")
+    answer_strategy=SentenceTransformerAnswerStrategy(
+        get_absolute_path("../artifacts/gpt2")
+    )
 )
 
 

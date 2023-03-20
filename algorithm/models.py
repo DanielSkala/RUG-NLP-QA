@@ -13,6 +13,13 @@ class TextEntry:
     text: str
     metadata: dict
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'metadata': self.metadata
+        }
+
 
 @dataclass
 class EmbeddingEntry:
