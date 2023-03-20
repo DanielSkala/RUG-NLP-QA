@@ -9,3 +9,5 @@ pytest~=7.1.2
 numpy~=1.22.3
 dataclasses~=0.8
 transformers~=4.22.0
+fastapi~=0.88.0
+pandas~=1.4.4

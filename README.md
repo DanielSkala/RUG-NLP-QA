@@ -36,3 +36,7 @@ Find indexes
 curl http://localhost:9200/_aliases
 ```
 
+Run API in /api/main.py
+```
+uvicorn api.main:app --reload --port 8000
+```

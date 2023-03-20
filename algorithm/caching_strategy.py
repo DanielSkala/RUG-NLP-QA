@@ -5,6 +5,7 @@ from algorithm.embedding_factory import EmbeddingFactory
 from algorithm.document_factory import DocumentFactory, generate_id
 from algorithm.document_operator import DocumentOperator
 from typing import List
+import pandas as pd
 
 """
 CachingStrategy is an abstract class that defines the interface for caching strategies.
@@ -115,6 +116,18 @@ class ChunkingCachingStrategy(CachingStrategy):
                 }))
 
         return text_entry_chunks
+
+    def find(self, doc_id: str, query: str, metadata=None):
+        query_embedding = self.embedding_operator.embed(query)
+        entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
+        text_entries = self._embedding2text_entries(entries)
+        # convert to pandas and group by chunk_id
+        df = pd.DataFrame([text_entry.to_dict() for text_entry in text_entries])
+        df = df.groupby("metadata.chunk_id").agg(lambda x: " ".join(x))
+        # convert back to list of TextEntry
+        text_entries = [TextEntry(id=chunk_id, text=text, metadata={"chunk_id": chunk_id}) for chunk_id, text in
+                        df["text"].iteritems()]
+        return text_entries
 
 
 class PDFChunkingCachingStrategy(ChunkingCachingStrategy):
