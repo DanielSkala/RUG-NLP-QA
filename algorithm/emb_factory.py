@@ -20,7 +20,7 @@ class ESEmbeddingFactory(EmbeddingFactory):
                  es_client_params,
                  index_name,
                  embedding_size):
-        self.es_client = Elasticsearch(hosts=[es_client_params])
+        self.es_client = Elasticsearch(**es_client_params)
         self.index_name = index_name
         self.embedding_size = embedding_size
         self.__create_index_if_not_exists()
