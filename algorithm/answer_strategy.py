@@ -89,8 +89,8 @@ class SentenceTransformerAnswerStrategy(AnswerStrategy):
 if __name__ == '__main__':
     sentence_trans_answer_strategy = SentenceTransformerAnswerStrategy("../artifacts/gpt2")
     answer = sentence_trans_answer_strategy.formulate_answer("What is the meaning of life?", [
-        TextEntry("1", "To live up to the best."),
-        TextEntry("2", "To do the best we can."),
+        TextEntry("1", "To live up to the best.", {}),
+        TextEntry("2", "To do the best we can.", {}),
     ])
     print(f">>> Sentence Transformers Answer:\n{answer}")
 
