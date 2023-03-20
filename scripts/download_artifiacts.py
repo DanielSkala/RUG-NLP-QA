@@ -2,6 +2,7 @@ from sentence_transformers import SentenceTransformer
 
 model_names = [
     "distiluse-base-multilingual-cased-v1",
+    "gpt2"
 ]
 
 for model_name in model_names:
