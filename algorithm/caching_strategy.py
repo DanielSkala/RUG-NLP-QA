@@ -6,6 +6,7 @@ from algorithm.document_factory import DocumentFactory, generate_id
 from algorithm.document_operator import DocumentOperator
 from typing import List
 import pandas as pd
+from utils.chunk import chunk_corpus
 
 """
 CachingStrategy is an abstract class that defines the interface for caching strategies.
@@ -89,23 +90,7 @@ class ChunkingCachingStrategy(CachingStrategy):
         self.sentence_word_count = sentence_word_count
 
     def _chunk_corpus(self, corpus: str) -> List[TextEntry]:
-        chunks = []
-        count_words = lambda sentence: len(sentence.split())
-        sentence_acc = ""
 
-        for sentence in corpus.split("."):
-            if count_words(sentence_acc) + count_words(sentence) > self.sentence_word_count[1]:
-                chunks.append(sentence_acc)
-                sentence_acc = ""
-            sentence_acc += sentence
-
-        if sentence_acc:
-            chunks.append(sentence_acc)
-
-        # now we have a list of chunks, we need to split them into smaller chunks according to chunk_size
-        chunked_chunks = []
-        for chunk in chunks:
-            chunked_chunks += [chunk[i:i + self.chunk_size] for i in range(0, len(chunk), self.chunk_size)]
 
         text_entry_chunks = []
         for chunk in chunked_chunks:
