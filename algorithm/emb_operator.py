@@ -27,7 +27,7 @@ class ModelEmbeddingOperator(EmbeddingOperator):
 
 
 if __name__ == '__main__':
-    operator = ModelEmbeddingOperator('distiluse-base-multilingual-cased-v1')
+    operator = ModelEmbeddingOperator('../artifacts/distiluse-base-multilingual-cased-v1')
     entries = [
         TextEntry(
             id="1",
