@@ -41,7 +41,6 @@ class CachingStrategy(ABC):
         parsed_obj = self.document_operator.parse(document)
         text_entries = self._parsed_obj_to_entries(parsed_obj)
         embedding_entries = self._text2embedding_entries(text_entries)
-        print(text_entries)
         # Store them
         self._store_text(document.id, text_entries)
         self._store_embeddings(document.id, embedding_entries)

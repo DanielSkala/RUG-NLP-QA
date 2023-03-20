@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from algorithm.models import TextEntry, EmbeddingEntry
 from sentence_transformers import SentenceTransformer
-
+from tqdm import tqdm
 
 class EmbeddingOperator(ABC):
     @abstractmethod
@@ -23,7 +23,7 @@ class ModelEmbeddingOperator(EmbeddingOperator):
                 embedding=list(embedding),
                 metadata=entry.metadata
             ) for entry, embedding in
-            zip(entries, embeddings)]
+            tqdm(zip(entries, embeddings))]
 
 
 if __name__ == '__main__':
