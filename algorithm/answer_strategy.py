@@ -39,7 +39,7 @@ class OpenAIAnswerStrategy(AnswerStrategy):
         response = openai.ChatCompletion.create(
             model=self.model_name,
             temperature=0.5,
-            max_tokens=50,
+            max_tokens=512,
             top_p=1,
             frequency_penalty=0,
             presence_penalty=0,
@@ -52,16 +52,16 @@ class OpenAIAnswerStrategy(AnswerStrategy):
         return openai_response
 
     def formulate_answer(self, query: str, entries: [TextEntry], *args, **kwargs) -> str:
-        text = "Result from Google Search:\n\n"
-        for entry in entries:
-            text += f"{entry.text}\n\n"
-        text = f"Question: {query}\n\n"
-        text += "Answer: "
-
+        lines = [
+            "Result from Google Search:",
+            "\n".join(entry.text for entry in entries),
+            f"Question: {query}",
+            "Answer: "
+        ]
         if self.model_name.startswith("text"):
-            response = self.openai_completion(text)
+            response = self.openai_completion("\n".join(lines))
         else:
-            response = self.openai_chat_completion(text)
+            response = self.openai_chat_completion("\n".join(lines))
 
         # response += "\n\nResources:\n"
         # for entry in entries:
@@ -84,7 +84,7 @@ class SentenceTransformerAnswerStrategy(AnswerStrategy):
             text += f"{entry.text}\n\n"
         text += f"Question: {query}\n\n"
         text += "Given the context, the answer is"
-        generated_text = generator(text, max_new_tokens=50)
+        generated_text = generator(text, max_new_tokens=64)
         full_text =  generated_text[0]['generated_text']
         answer = full_text.split("Given the context, the answer is")[1]
         return answer

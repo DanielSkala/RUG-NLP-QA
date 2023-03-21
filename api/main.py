@@ -5,7 +5,7 @@ from algorithm.embedding_operator import ModelEmbeddingOperator
 from algorithm.embedding_factory import ESEmbeddingFactory
 from algorithm.document_factory import ESDocumentFactory
 from algorithm.caching_strategy import PDFChunkingCachingStrategy
-from algorithm.answer_strategy import SentenceTransformerAnswerStrategy
+from algorithm.answer_strategy import OpenAIAnswerStrategy
 from utils.path import get_absolute_path
 
 es_client_params = {
@@ -25,9 +25,7 @@ caching_strategy = PDFChunkingCachingStrategy(
 
 ir_system = IRSystem(
     caching_strategy=caching_strategy,
-    answer_strategy=SentenceTransformerAnswerStrategy(
-        get_absolute_path("../artifacts/gpt2")
-    )
+    answer_strategy=OpenAIAnswerStrategy("text-davinci-003")
 )
 
 
