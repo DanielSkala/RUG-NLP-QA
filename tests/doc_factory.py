@@ -26,7 +26,8 @@ def loaded_doc_factory(es_doc_factory):
     # generate random embedding entries
     text_entries = []
     for i in range(10):
-        text_entries.append(TextEntry(f"preloaded-text-entry-{i}", f"Preloaded text sample {i}", {}))
+        text_entries.append(
+            TextEntry(f"preloaded-text-entry-{i}", f"Preloaded text sample {i}", {}))
 
     es_doc_factory.store(doc_id, text_entries, refresh=True)
     return es_doc_factory

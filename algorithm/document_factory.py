@@ -16,7 +16,8 @@ class DocumentFactory(ABC):
         pass
 
     @abstractmethod
-    def retrieve(self, doc_id, document_ids: [str], metadata: dict = None, *args, **kwargs) -> [TextEntry]:
+    def retrieve(self, doc_id, document_ids: [str], metadata: dict = None, *args, **kwargs) -> [
+        TextEntry]:
         pass
 
 
@@ -64,7 +65,8 @@ class ESDocumentFactory(DocumentFactory):
         bulk(self.es_client, actions, refresh=refresh)
         return True
 
-    def retrieve(self, doc_id, document_ids: [str] = None, metadata: dict = None, *args, **kwargs) -> [TextEntry]:
+    def retrieve(self, doc_id, document_ids: [str] = None, metadata: dict = None, *args,
+                 **kwargs) -> [TextEntry]:
         query = {
             "query": {
                 "bool": {

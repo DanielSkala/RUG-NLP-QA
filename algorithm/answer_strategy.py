@@ -85,7 +85,7 @@ class SentenceTransformerAnswerStrategy(AnswerStrategy):
         text += f"Question: {query}\n\n"
         text += "Given the context, the answer is"
         generated_text = generator(text, max_new_tokens=64)
-        full_text =  generated_text[0]['generated_text']
+        full_text = generated_text[0]['generated_text']
         answer = full_text.split("Given the context, the answer is")[1]
         return answer
 

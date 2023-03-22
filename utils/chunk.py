@@ -1,7 +1,8 @@
 from typing import List, Tuple
 
 
-def chunk_corpus(corpus: str, chunk_size: int, sentence_word_count: Tuple[int, int]) -> List[List[str]]:
+def chunk_corpus(corpus: str, chunk_size: int, sentence_word_count: Tuple[int, int]) -> List[
+    List[str]]:
     all_sentences = []
     count_words = lambda sentence: len(sentence.split(" "))
     sentence_acc = ""

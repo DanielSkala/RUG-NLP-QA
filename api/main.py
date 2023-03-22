@@ -17,7 +17,8 @@ document_index_name = 'example_document_index_3'
 
 caching_strategy = PDFChunkingCachingStrategy(
     document_factory=ESDocumentFactory(es_client_params, index_name=document_index_name),
-    embedding_factory=ESEmbeddingFactory(es_client_params, embedding_size=512, index_name=embedding_index_name),
+    embedding_factory=ESEmbeddingFactory(es_client_params, embedding_size=512,
+                                         index_name=embedding_index_name),
     embedding_operator=ModelEmbeddingOperator(
         get_absolute_path('../artifacts/distiluse-base-multilingual-cased-v1')),
     document_operator=PDFDocumentOperator()
@@ -27,7 +28,6 @@ ir_system = IRSystem(
     caching_strategy=caching_strategy,
     answer_strategy=OpenAIAnswerStrategy("text-davinci-003")
 )
-
 
 app = FastAPI()
 

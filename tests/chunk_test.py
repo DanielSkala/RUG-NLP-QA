@@ -1,6 +1,6 @@
-
 from utils.path import get_absolute_path
 from utils.chunk import chunk_corpus, show_chunk
+
 
 def test_basic_chunking():
     print("Loading corpus...", get_absolute_path("../tests/assets/stalin.txt"))

@@ -12,6 +12,7 @@ index_name = "test_index_es_embedding_factory"
 embedding_size = 128
 doc_id = "test_doc_id"
 
+
 @pytest.fixture()
 def es_embedding_factory():
     es_embedding_factory = ESEmbeddingFactory(es_client_params, index_name, embedding_size)
@@ -25,7 +26,8 @@ def loaded_es_embedding_factory(es_embedding_factory):
     # generate random embedding entries
     embedding_entries = []
     for i in range(10):
-        embedding_entries.append(EmbeddingEntry("preloaded-" + str(i), [i + -10.0 for _ in range(embedding_size)], {}))
+        embedding_entries.append(
+            EmbeddingEntry("preloaded-" + str(i), [i + -10.0 for _ in range(embedding_size)], {}))
     # Store them
     es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
     return es_embedding_factory
@@ -54,7 +56,8 @@ def test_retrieve(loaded_es_embedding_factory):
         EmbeddingEntry("b", [1.0 for _ in range(embedding_size)], {}),
     ]
     loaded_es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
-    retrieved_embedding_entries = loaded_es_embedding_factory.retrieve(doc_id, [1.0 for _ in range(embedding_size)])
+    retrieved_embedding_entries = loaded_es_embedding_factory.retrieve(doc_id, [1.0 for _ in range(
+        embedding_size)])
 
     assert loaded_es_embedding_factory.es_client.count(index=index_name)["count"] == 10 + 2
     assert retrieved_embedding_entries[0].id == "a"
@@ -69,10 +72,12 @@ def test_meta_retrieval(es_embedding_factory):
     # generate random embedding entries
     embedding_entries = []
     for i in range(10):
-        embedding_entries.append(EmbeddingEntry(str(i), [i+1 for _ in range(embedding_size)], {"key": "value"}))
+        embedding_entries.append(
+            EmbeddingEntry(str(i), [i + 1 for _ in range(embedding_size)], {"key": "value"}))
     # Store them
     es_embedding_factory.store(doc_id, embedding_entries, refresh=True)
-    retrieved_embedding_entries = es_embedding_factory.retrieve(doc_id, [1.0 for _ in range(embedding_size)])
+    retrieved_embedding_entries = es_embedding_factory.retrieve(doc_id, [1.0 for _ in
+                                                                         range(embedding_size)])
     assert retrieved_embedding_entries[0].metadata == {"key": "value"}
 
 

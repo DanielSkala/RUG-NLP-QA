@@ -47,7 +47,8 @@ class CachingStrategy(ABC):
 
     def find(self, doc_id: str, query: str, metadata=None):
         query_embedding = \
-            self.embedding_operator.embed([TextEntry(generate_id(), text=query, metadata={})])[0].embedding
+            self.embedding_operator.embed([TextEntry(generate_id(), text=query, metadata={})])[
+                0].embedding
         entries = self.embedding_factory.retrieve(doc_id, query_embedding, metadata)
         return self._embedding2text_entries(doc_id, entries)
 
@@ -58,7 +59,8 @@ class CachingStrategy(ABC):
     def _text2embedding_entries(self, text_entries: List[TextEntry]) -> List[EmbeddingEntry]:
         return self.embedding_operator.embed(text_entries)
 
-    def _embedding2text_entries(self, doc_id, embedding_entries: List[EmbeddingEntry]) -> List[TextEntry]:
+    def _embedding2text_entries(self, doc_id, embedding_entries: List[EmbeddingEntry]) -> List[
+        TextEntry]:
         ids = [embedding_entry.id for embedding_entry in embedding_entries]
         text_entries = self.document_factory.retrieve(doc_id, ids)
         return text_entries
@@ -84,7 +86,8 @@ class ChunkingCachingStrategy(CachingStrategy):
                  document_operator: DocumentOperator,
                  chunk_size=16,
                  sentence_word_count=(15, 100)):
-        super().__init__(embedding_factory, document_factory, embedding_operator, document_operator)
+        super().__init__(embedding_factory, document_factory, embedding_operator,
+                         document_operator)
         self.chunk_size = chunk_size
         self.sentence_word_count = sentence_word_count
 
@@ -110,11 +113,13 @@ class ChunkingCachingStrategy(CachingStrategy):
         df["chunk_id"] = df["metadata"].apply(lambda x: x["chunk_id"])
         df = df.groupby("chunk_id").agg(lambda x: " ".join(x))
         # convert back to list of TextEntry
-        text_entries = [TextEntry(id=chunk_id, text=text, metadata={"chunk_id": chunk_id}) for chunk_id, text in
+        text_entries = [TextEntry(id=chunk_id, text=text, metadata={"chunk_id": chunk_id}) for
+                        chunk_id, text in
                         df["text"].iteritems()]
         return text_entries
 
 
 class PDFChunkingCachingStrategy(ChunkingCachingStrategy):
     def _parsed_obj_to_entries(self, parsed_obj: [str]) -> List[TextEntry]:
-        return self._chunk_corpus("\n ========================= PAGE END ========================= \n".join(parsed_obj))
+        return self._chunk_corpus(
+            "\n ========================= PAGE END ========================= \n".join(parsed_obj))
