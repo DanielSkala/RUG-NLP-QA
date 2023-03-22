@@ -12,8 +12,8 @@ es_client_params = {
     "hosts": "http://localhost:9200",
 }
 
-embedding_index_name = 'example_embedding_index_2'
-document_index_name = 'example_document_index_2'
+embedding_index_name = 'example_embedding_index_3'
+document_index_name = 'example_document_index_3'
 
 caching_strategy = PDFChunkingCachingStrategy(
     document_factory=ESDocumentFactory(es_client_params, index_name=document_index_name),

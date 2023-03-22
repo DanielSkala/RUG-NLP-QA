@@ -1,3 +1,5 @@
+import os.path
+
 from algorithm.ir_system import IRSystem
 from algorithm.document_operator import PDFDocumentOperator
 from algorithm.embedding_operator import ModelEmbeddingOperator
@@ -12,13 +14,16 @@ es_client_params = {
     "hosts": "http://localhost:9200",
 }
 
-embedding_index_name = 'example_embedding_index_2'
-document_index_name = 'example_document_index_2'
+embedding_index_name = 'example_embedding_index_3'
+document_index_name = 'example_document_index_3'
+
+pdf_path = input("Enter the path of the pdf file: ")
+id_name = input("Enter the id of the pdf file: ")
 
 if __name__ == '__main__':
     doc = Document(
-        id='stalin_wiki',
-        data="./samples/"
+        id=id_name,
+        data=pdf_path
     )
 
     caching_strategy = PDFChunkingCachingStrategy(
