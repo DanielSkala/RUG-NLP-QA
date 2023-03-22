@@ -10,11 +10,11 @@ def chunk_corpus(corpus: str, chunk_size: int, sentence_word_count: Tuple[int, i
 
     # split if you see a dot followed by a space followed by a capital letter or a [
 
-    for sentence in re.split(r"\. (?=[A-Z\[])", corpus):
+    for sentence in re.split(r"\. (?=[A-Z\[])|\.\[", corpus):
         if count_words(sentence_acc) + count_words(sentence) >= sentence_word_count[1]:
 
             if sentence_acc:
-                all_sentences.append(f"{'.'.join(sentence_acc)}.")
+                all_sentences.append(".".join(sentence_acc))
             sentence_acc = [sentence]
         else:
             sentence_acc.append(sentence)

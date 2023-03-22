@@ -58,14 +58,11 @@ class OpenAIAnswerStrategy(AnswerStrategy):
             f"Question: {query}",
             "Answer: "
         ]
+        print(f"Lines: {lines}")
         if self.model_name.startswith("text"):
             response = self.openai_completion("\n".join(lines))
         else:
             response = self.openai_chat_completion("\n".join(lines))
-
-        # response += "\n\nResources:\n"
-        # for entry in entries:
-        #     response += f"{entry.id}\n{entry.text}\n\n"
 
         return response
 

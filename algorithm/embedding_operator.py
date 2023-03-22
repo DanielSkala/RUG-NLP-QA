@@ -4,6 +4,7 @@ from sentence_transformers import SentenceTransformer
 from openai import Embedding as OpenAIEmbedding
 import openai
 import os
+from tqdm import tqdm
 
 
 class EmbeddingOperator(ABC):
@@ -19,7 +20,10 @@ class ModelEmbeddingOperator(EmbeddingOperator):
 
     def embed(self, entries: [TextEntry], *args, **kwargs) -> [EmbeddingEntry]:
         model = SentenceTransformer(self.model_name)
-        embeddings = model.encode([entry.text for entry in entries])
+
+        texts = [entry.text for entry in entries]
+        embeddings = model.encode(texts, show_progress_bar=True, batch_size=32)
+
         return [
             EmbeddingEntry(
                 id=entry.id,

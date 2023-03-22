@@ -84,7 +84,7 @@ class ChunkingCachingStrategy(CachingStrategy):
                  document_factory: DocumentFactory,
                  embedding_operator: EmbeddingOperator,
                  document_operator: DocumentOperator,
-                 chunk_size=16,
+                 chunk_size=8,
                  sentence_word_count=(15, 100)):
         super().__init__(embedding_factory, document_factory, embedding_operator,
                          document_operator)
