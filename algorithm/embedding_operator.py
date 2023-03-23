@@ -43,7 +43,8 @@ class OpenAIEmbeddingOperator(EmbeddingOperator):
         embeddings = OpenAIEmbedding.create(
             model=self.model_name,
             input=[entry.text for entry in entries]
-        )
+        )["data"]
+        embeddings = [embedding["embedding"] for embedding in embeddings]
         return [
             EmbeddingEntry(
                 id=entry.id,
@@ -54,7 +55,24 @@ class OpenAIEmbeddingOperator(EmbeddingOperator):
 
 
 if __name__ == '__main__':
-    operator = ModelEmbeddingOperator('../artifacts/distiluse-base-multilingual-cased-v1')
+    # operator = ModelEmbeddingOperator('../artifacts/distiluse-base-multilingual-cased-v1')
+    # entries = [
+    #     TextEntry(
+    #         id="1",
+    #         text='hello world',
+    #         metadata={}
+    #     ),
+    #     TextEntry(
+    #         id="2",
+    #         text='gay',
+    #         metadata={}
+    #     ),
+    # ]
+    #
+    # embeddings = operator.embed(entries)
+    # print(embeddings)
+
+    operator = OpenAIEmbeddingOperator('text-embedding-ada-002')
     entries = [
         TextEntry(
             id="1",
@@ -70,3 +88,4 @@ if __name__ == '__main__':
 
     embeddings = operator.embed(entries)
     print(embeddings)
+
