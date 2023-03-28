@@ -26,6 +26,7 @@ if __name__ == '__main__':
         data=pdf_path
     )
 
+    # FIXME: THE EMBEDDING SIZE NEEDS TO BE ADJUSTED TO THE CORRECT VALUE
     embedding_factory = ESEmbeddingFactory(es_client_params, embedding_size=1536,
                                            index_name=embedding_index_name)
     document_factory = ESDocumentFactory(es_client_params, index_name=document_index_name)
