@@ -19,9 +19,9 @@ caching_strategy = PDFChunkingCachingStrategy(
     document_factory=ESDocumentFactory(es_client_params, index_name=document_index_name),
     embedding_factory=ESEmbeddingFactory(es_client_params, embedding_size=512,
                                          index_name=embedding_index_name),
-    # embedding_operator=ModelEmbeddingOperator(
-    #     get_absolute_path('../artifacts/distiluse-base-multilingual-cased-v1')),
-    embedding_operator=OpenAIEmbeddingOperator("text-embedding-ada-002"),
+    embedding_operator=ModelEmbeddingOperator(
+        get_absolute_path('../artifacts/distiluse-base-multilingual-cased-v1')),
+    # embedding_operator=OpenAIEmbeddingOperator("text-embedding-ada-002"),
     document_operator=PDFDocumentOperator()
 )
 

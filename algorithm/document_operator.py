@@ -13,7 +13,7 @@ class DocumentOperator(ABC):
 class PDFDocumentOperator(DocumentOperator):
     def parse(self, document, *args, **kwargs) -> any:
         path = document.data
-        print(path)
+        # print(path)
         reader = PdfReader(path)  # path / ../'Project plan.pdf'
         text = [page.extract_text() for page in tqdm(reader.pages)]
         return text

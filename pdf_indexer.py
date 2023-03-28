@@ -37,9 +37,9 @@ if __name__ == '__main__':
     caching_strategy = PDFChunkingCachingStrategy(
         document_factory=document_factory,
         embedding_factory=embedding_factory,
-        # embedding_operator=ModelEmbeddingOperator(
-        #     get_absolute_path('../artifacts/distiluse-base-multilingual-cased-v1')),
-        embedding_operator=OpenAIEmbeddingOperator("text-embedding-ada-002"),
+        embedding_operator=ModelEmbeddingOperator(
+            get_absolute_path('../artifacts/multi-qa-MiniLM-L6-cos-v1')),
+        # embedding_operator=OpenAIEmbeddingOperator("text-embedding-ada-002"),
         document_operator=PDFDocumentOperator(),
         chunk_size=5,
         sentence_word_count=(10, 20)
