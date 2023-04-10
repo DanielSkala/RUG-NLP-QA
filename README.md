@@ -64,8 +64,8 @@ python ./pdf_indexer.py
 ## 6. After running the script, verify that the embeddings and text entries have been stored
 You should see a ton of text
 ```
-http://localhost:9200/example_document_index_3/_search
-http://localhost:9200/example_embedding_index_3/_search
+http://localhost:9200/document_index/_search
+http://localhost:9200/embedding_index/_search
 ```
 
 ### [Optional] OpenAI GPT-3
@@ -78,6 +78,7 @@ export OPENAI_API_KEY=<your key>
 
 ## Run API in /api/main.py
 
+Make sure you have uvicorn installed
 ```
 python -m uvicorn api.main:app --reload --port 8000
 ```
@@ -94,8 +95,7 @@ Example queries:
 Example API calls:
 ```
 http://localhost:8000/doc/<doc_id>/_index?q=<query>
-http://localhost:8000/doc/stalingay/_index?
-q=What%20is%20the%20equation%20of%20multihead%20attention?
+http://localhost:8000/doc/transformers/_index?q=What%20is%20the%20equation%20of%20multihead%20attention?
 ```
 
 ## [Optional] Clean up & delete a virtual environment

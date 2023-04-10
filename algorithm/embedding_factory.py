@@ -1,4 +1,7 @@
 from abc import ABC, abstractmethod
+
+import elasticsearch.helpers
+
 from algorithm.models import EmbeddingEntry
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
@@ -68,7 +71,13 @@ class ESEmbeddingFactory(EmbeddingFactory):
                 },
             }
             for embedding_entry in embeddings]
-        bulk(self.es_client, actions, refresh=refresh)
+        try:
+            bulk(self.es_client, actions, refresh=refresh)
+        except elasticsearch.helpers.BulkIndexError as e:
+            # Print reaosons
+            for item in e.errors:
+                # print reason
+                print(item['index']['error'])
 
     def retrieve(self, doc_id, embedding: [float], metadata: dict = None, *args, **kwargs) -> [
         EmbeddingEntry]:
