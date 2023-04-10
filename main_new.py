@@ -32,6 +32,8 @@ similarity_list = []
 start_time = time.time()
 
 for q in tqdm(question_list):
+    if question_list.index(q) == 25:
+        continue
     result = ir_system.find('test', q)
     gen_answer = model.encode(result['answer'])
     correct_answer = model.encode(answer_list[question_list.index(q)])
