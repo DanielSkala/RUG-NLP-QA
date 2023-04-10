@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from algorithm.ir_system import IRSystem
 from algorithm.document_operator import PDFDocumentOperator
-
 from algorithm.caching_strategy import PDFChunkingCachingStrategy
 import settings
 

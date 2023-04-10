@@ -3,7 +3,8 @@ from algorithm.models import TextEntry, EmbeddingEntry, Document
 from algorithm.embedding_operator import EmbeddingOperator
 from algorithm.embedding_factory import EmbeddingFactory
 from algorithm.document_factory import DocumentFactory, generate_id
-from algorithm.document_operator import DocumentOperator
+# from algorithm.document_operator import DocumentOperator
+from algorithm.document_operator_new import DocumentOperator
 from typing import List
 import pandas as pd
 from utils.chunk import chunk_corpus
@@ -111,11 +112,12 @@ class ChunkingCachingStrategy(CachingStrategy):
         # convert to pandas and group by chunk_id
         df = pd.DataFrame([text_entry.to_dict() for text_entry in text_entries])
         df["chunk_id"] = df["metadata"].apply(lambda x: x["chunk_id"])
+        df = df.drop(columns=["metadata"])
         df = df.groupby("chunk_id").agg(lambda x: " ".join(x))
         # convert back to list of TextEntry
         text_entries = [TextEntry(id=chunk_id, text=text, metadata={"chunk_id": chunk_id}) for
                         chunk_id, text in
-                        df["text"].iteritems()]
+                        df["text"].items()]
         return text_entries
 
 

@@ -58,7 +58,7 @@ class OpenAIAnswerStrategy(AnswerStrategy):
             f"Question: {query}",
             "Answer: "
         ]
-        print(f"Lines: {lines}")
+        # print(f"Lines: {lines}")
         if self.model_name.startswith("text"):
             response = self.openai_completion("\n".join(lines))
         else:

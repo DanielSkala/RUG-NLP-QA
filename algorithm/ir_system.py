@@ -2,7 +2,7 @@ from abc import ABC
 from algorithm.caching_strategy import CachingStrategy
 from algorithm.answer_strategy import AnswerStrategy
 from algorithm.models import Document
-
+from sentence_transformers import SentenceTransformer, util
 
 class IRSystem(ABC):
 
@@ -20,7 +20,7 @@ class IRSystem(ABC):
         return {
             "resources": entries,
             "query": query,
-            "answer": self.answer_strategy.formulate_answer(query, entries)
+            "answer": self.answer_strategy.formulate_answer(query, entries),
         }
 
 

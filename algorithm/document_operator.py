@@ -16,6 +16,7 @@ class PDFDocumentOperator(DocumentOperator):
         # print(path)
         reader = PdfReader(path)  # path / ../'Project plan.pdf'
         text = [page.extract_text() for page in tqdm(reader.pages)]
+        
         return text
 
 
