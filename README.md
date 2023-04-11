@@ -75,8 +75,8 @@ Run the following command to get the API key
 export OPENAI_API_KEY=<your key>
 ```
 
-## To run the model on the question
-Choose which model to use for the answer strategy in settings.py (line 21 or 22)
+## To run the model on the questions
+First choose which model to use for the answer strategy in settings.py (line 21 or 22), then run:
 ```
 python main.py
 ```
