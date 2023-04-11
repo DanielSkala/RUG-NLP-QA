@@ -56,8 +56,7 @@ Find indexes
 curl http://localhost:9200/_aliases
 ```
 
-## 5. Index PDF documents
-It will ask you for a path to a pdf which can be found in ./samples and a name 
+## 5. Index questions database
 ```
 python ./pdf_indexer.py
 ```
@@ -76,11 +75,10 @@ Run the following command to get the API key
 export OPENAI_API_KEY=<your key>
 ```
 
-## Run API in /api/main.py
-
-Make sure you have uvicorn installed
+## To run the model on the question
+Choose which model to use for the answer strategy in settings.py (line 21 or 22)
 ```
-python -m uvicorn api.main:app --reload --port 8000
+python main.py
 ```
 
 ## Sample API calls

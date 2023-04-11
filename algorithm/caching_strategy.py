@@ -4,7 +4,7 @@ from algorithm.embedding_operator import EmbeddingOperator
 from algorithm.embedding_factory import EmbeddingFactory
 from algorithm.document_factory import DocumentFactory, generate_id
 # from algorithm.document_operator import DocumentOperator
-from algorithm.document_operator_new import DocumentOperator
+from algorithm.document_operator import DocumentOperator
 from typing import List
 import pandas as pd
 from utils.chunk import chunk_corpus
