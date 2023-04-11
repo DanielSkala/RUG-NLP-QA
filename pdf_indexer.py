@@ -1,15 +1,13 @@
 
 from algorithm.ir_system import IRSystem
-from algorithm.document_operator_new import PDFDocumentOperator
+from algorithm.document_operator import PDFDocumentOperator
 from algorithm.models import Document
 from algorithm.caching_strategy import PDFChunkingCachingStrategy
 from algorithm.answer_strategy import SentenceTransformerAnswerStrategy
 import settings
 
-
-# pdf_path = input("Enter the path of the pdf file: ")
 pdf_path = None
-id_name = input("Enter the id of the pdf file: ")
+id_name = "test"
 
 MODEL_NAME = "distiluse-base-multilingual-cased-v1"
 MODEL_EMBEDDING_SIZE = 512
