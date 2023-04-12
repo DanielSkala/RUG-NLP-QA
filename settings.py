@@ -18,5 +18,5 @@ embedding_operator = ModelEmbeddingOperator(get_absolute_path('../artifacts/dist
 document_factory = ESDocumentFactory(es_client_params, index_name=DOCUMENT_INDEX_NAME)
 embedding_factory = ESEmbeddingFactory(es_client_params, embedding_size=512, index_name=EMBEDDING_INDEX_NAME)
 
-answer_strategy = OpenAIAnswerStrategy("text-davinci-003")
-#answer_strategy = SentenceTransformerAnswerStrategy(get_absolute_path('../artifacts/gpt2'))
+# answer_strategy = OpenAIAnswerStrategy("text-davinci-003")
+answer_strategy = SentenceTransformerAnswerStrategy(get_absolute_path('../artifacts/gpt2'))

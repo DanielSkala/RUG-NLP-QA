@@ -60,6 +60,8 @@ curl http://localhost:9200/_aliases
 ```
 python ./pdf_indexer.py
 ```
+This will ask for the path of pdf you want to answer for and the id, use this id to query in the api.
+
 ## 6. After running the script, verify that the embeddings and text entries have been stored
 You should see a ton of text
 ```
@@ -101,4 +103,9 @@ http://localhost:8000/doc/transformers/_index?q=What%20is%20the%20equation%20of%
 ```
 conda deactivate
 conda env remove -n temp-env-py3.9
+```
+
+To run the api (make sure you have uvicorn installed):
+```
+python -m uvicorn api.main:app --reload --port 8000
 ```

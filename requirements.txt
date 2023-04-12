@@ -12,3 +12,4 @@ fastapi~=0.88.0
 pandas~=1.4.4
 huggingface_hub==0.12.1
 uvicorn==0.21.1
+datasets==2.11.0
