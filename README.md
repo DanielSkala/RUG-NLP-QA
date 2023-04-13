@@ -81,6 +81,7 @@ export OPENAI_API_KEY=<your key>
 First choose which model to use for the answer strategy in settings.py (line 21 or 22), then run:
 ```
 python main.py
+python -m uvicorn api.main:app --reload --port 8000
 ```
 
 ## Sample API calls
