@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from algorithm.ir_system import IRSystem
-from algorithm.document_operator import PDFDocumentOperator
+from algorithm.document_operator import NLPDocumentOperator
 from datasets import load_dataset
 from algorithm.caching_strategy import PDFChunkingCachingStrategy
 import settings
@@ -13,7 +13,7 @@ caching_strategy = PDFChunkingCachingStrategy(
     embedding_factory=settings.embedding_factory,
     embedding_operator=settings.embedding_operator,
     # embedding_operator=OpenAIEmbeddingOperator("text-embedding-ada-002"),
-    document_operator=PDFDocumentOperator()
+    document_operator=NLPDocumentOperator()
 )
 
 ir_system = IRSystem(

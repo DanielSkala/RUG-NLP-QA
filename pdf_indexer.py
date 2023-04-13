@@ -9,9 +9,6 @@ import settings
 pdf_path = input("Enter the path of the pdf file: ")
 id_name = input("Enter the id of the pdf file: ")
 
-MODEL_NAME = "distiluse-base-multilingual-cased-v1"
-MODEL_EMBEDDING_SIZE = 512
-
 if __name__ == '__main__':
     doc = Document(
         id=id_name,
